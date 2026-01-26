@@ -52,39 +52,6 @@ const registrationSchema = z.object({
 
 type RegistrationValues = z.infer<typeof registrationSchema>;
 
-function Particles() {
-    const ref = useRef<any>(null);
-    const [sphere] = useState(() => {
-        const positions = new Float32Array(3000);
-        for (let i = 0; i < 3000; i++) {
-            positions[i] = (Math.random() - 0.5) * 50;
-        }
-        return positions;
-    });
-
-    useFrame((state, delta) => {
-        if (ref.current) {
-            ref.current.rotation.x -= delta / 10;
-            ref.current.rotation.y -= delta / 15;
-            ref.current.position.z = Math.sin(state.clock.elapsedTime * 0.2) * 2;
-        }
-    });
-
-    return (
-        <group rotation={[0, 0, Math.PI / 4]}>
-            <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
-                <PointMaterial
-                    transparent
-                    color="#4B9CD3"
-                    size={0.05}
-                    sizeAttenuation={true}
-                    depthWrite={false}
-                    opacity={0.4}
-                />
-            </Points>
-        </group>
-    );
-}
 
 function Model({ url }: { url: string }) {
     const { scene } = useGLTF(url);
@@ -138,7 +105,7 @@ const RegistrationModal = ({ children }: { children: React.ReactNode }) => {
             const data = (await response.json()) as { error?: string };
 
             if (response.ok) {
-                toast.success("Registration successful! Welcome to FalconHacks.");
+                toast.success("Registration successful! Welcome to FalconHack.");
                 setOpen(false);
                 form.reset();
             } else {
@@ -160,7 +127,7 @@ const RegistrationModal = ({ children }: { children: React.ReactNode }) => {
                         Mission Registration
                     </DialogTitle>
                     <DialogDescription className="text-xs tracking-widest text-[#C0C0C0]/60 uppercase">
-                        Enter your credentials to join FalconHacks 2026.
+                        Enter your credentials to join FalconHack 2026.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -286,7 +253,7 @@ const Navbar = () => {
                         <span className="text-xs font-black text-black uppercase">FH</span>
                     </div>
                     <div className="hidden text-xl font-bold tracking-tighter text-white uppercase md:block">
-                        Falcon Hacks
+                        Falcon Hack
                     </div>
                 </div>
 
@@ -421,7 +388,7 @@ export default function PagesHome() {
                         <h1 className="text-5xl leading-none font-black tracking-tighter text-white uppercase mix-blend-difference md:text-[10rem]">
                             falcon
                             <br />
-                            hacks
+                            hack
                         </h1>
                     </div>
 
