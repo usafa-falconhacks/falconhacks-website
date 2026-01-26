@@ -1,0 +1,48 @@
+---
+import { Toaster } from "@/components/ui/sonner";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>USAFA Schedule Generator</title>
+    <title>USAFA Schedule Generator</title>
+    <meta
+      name="description"
+      content="The fastest and most comprehensive way to generate your academic schedule"
+    />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://calendar.falconnet.us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="USAFA Schedule Generator" />
+    <meta
+      property="og:description"
+      content="The fastest and most comprehensive way to generate your academic schedule"
+    />
+    <meta property="og:image" content="/og.png" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="calendar.falconnet.us" />
+    <meta property="twitter:url" content="https://calendar.falconnet.us" />
+    <meta name="twitter:title" content="USAFA Schedule Generator" />
+    <meta
+      name="twitter:description"
+      content="The fastest and most comprehensive way to generate your academic schedule"
+    />
+    <meta name="twitter:image" content="/og.png" />
+  </head>
+
+  <body>
+    <div>
+      <slot />
+      <Toaster client:only />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+[
+    {
+        "id": "x0h2xeaxu",
+        "name": "PHYED 110",
+        "location": "Cadet Gymnasium GYM",
+        "periods": [
+            1,
+            2
+        ],
+        "day": "M",
+        "reminder": true,
+        "isTenLesson": true,
+        "lessonCount": 8,
+        "goGroup": "E"
+    },
+    {
+        "id": "dsgiqilj1",
+        "name": "BEHSCI 110",
+        "location": "Fairchild Hall 5K25",
+        "periods": [
+            3
+        ],
+        "day": "M",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "2v01q0lv7",
+        "name": "ECE 210",
+        "location": "Fairchild Hall 2F44",
+        "periods": [
+            5
+        ],
+        "day": "M",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "r33u8b255",
+        "name": "CHINESE 132",
+        "location": "Fairchild Hall 4H51",
+        "periods": [
+            4
+        ],
+        "day": "Both",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "vqrzgzm0u",
+        "name": "COMPSCI 110",
+        "location": "CYBER INNOVAT CENT 223",
+        "periods": [
+            6
+        ],
+        "day": "M",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "qossr1jn6",
+        "name": "CHEM 200",
+        "location": "Gregory Hall 2M124",
+        "periods": [
+            1,
+            2
+        ],
+        "day": "T",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "blho9p1up",
+        "name": "MATH 245",
+        "location": "Fairchild Hall 5F6",
+        "periods": [
+            3
+        ],
+        "day": "T",
+        "reminder": true,
+        "isTenLesson": false,
+        "goGroup": "Z"
+    },
+    {
+        "id": "6j0wijwdy",
+        "name": "CE 100",
+        "location": "Fairchild Hall 4D14",
+        "periods": [
+            5
+        ],
+        "day": "T",
+        "reminder": true,
+        "isTenLesson": true,
+        "lessonCount": 8,
+        "goGroup": "F"
+    },
+    {
+        "id": "8fijl9cnq",
+        "name": "AVIATION 100",
+        "location": "Fairchild Hall 1J100",
+        "periods": [
+            5
+        ],
+        "day": "T",
+        "reminder": true,
+        "isTenLesson": true,
+        "lessonCount": 10,
+        "goGroup": "H"
+    }
+]
