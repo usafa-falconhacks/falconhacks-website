@@ -12,7 +12,7 @@
   --popover-foreground: #002147;
   --primary: #003594;
   --primary-foreground: #ffffff;
-  --secondary: #B2B4B2;
+  --secondary: #b2b4b2;
   --secondary-foreground: #002147;
   --muted: #eaeff4;
   --muted-foreground: #6b7a8c;
@@ -38,7 +38,7 @@
   --sidebar-ring: #ffffff;
   --font-sans: Inter Tight, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Merriweather, serif;
-  --font-mono: 'Roboto Mono', monospace;
+  --font-mono: "JetBrains Mono", "Roboto Mono", monospace;
   --radius: 0.5rem;
   --shadow-x: 0rem;
   --shadow-y: 0.25rem;
@@ -48,16 +48,25 @@
   --shadow-color: 002147;
   --shadow-2xs: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.05);
   --shadow-xs: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.05);
-  --shadow-sm: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.10), 0rem 1px 2px -1px hsl(212.1127 100% 13.9216% / 0.10);
-  --shadow: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.10), 0rem 1px 2px -1px hsl(212.1127 100% 13.9216% / 0.10);
-  --shadow-md: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.10), 0rem 2px 4px -1px hsl(212.1127 100% 13.9216% / 0.10);
-  --shadow-lg: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.10), 0rem 4px 6px -1px hsl(212.1127 100% 13.9216% / 0.10);
-  --shadow-xl: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.10), 0rem 8px 10px -1px hsl(212.1127 100% 13.9216% / 0.10);
+  --shadow-sm:
+    0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.1),
+    0rem 1px 2px -1px hsl(212.1127 100% 13.9216% / 0.1);
+  --shadow:
+    0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.1),
+    0rem 1px 2px -1px hsl(212.1127 100% 13.9216% / 0.1);
+  --shadow-md:
+    0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.1),
+    0rem 2px 4px -1px hsl(212.1127 100% 13.9216% / 0.1);
+  --shadow-lg:
+    0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.1),
+    0rem 4px 6px -1px hsl(212.1127 100% 13.9216% / 0.1);
+  --shadow-xl:
+    0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.1),
+    0rem 8px 10px -1px hsl(212.1127 100% 13.9216% / 0.1);
   --shadow-2xl: 0rem 0.25rem 0.5rem 0rem hsl(212.1127 100% 13.9216% / 0.25);
   --tracking-normal: 0.01em;
   --spacing: 0.25rem;
 }
-
 
 @theme inline {
   --color-background: var(--background);
