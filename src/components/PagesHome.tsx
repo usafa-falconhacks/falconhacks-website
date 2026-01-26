@@ -2,7 +2,6 @@ import React, { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
     useGLTF,
-    OrbitControls,
     Environment,
     Float,
     PerspectiveCamera,
@@ -51,8 +50,7 @@ const Navbar = () => {
                 <Button
                     variant="outline"
                     size="sm"
-                    className="border-none bg-white  font-black tracking-widest text-black uppercase shadow-[0_0_50px_rgba(255,255,255,0.2)] transition-all duration-300 hover:scale-105 hover:bg-[#C0C0C0]"
-
+                    className="border-none bg-white font-black tracking-widest text-black uppercase shadow-[0_0_50px_rgba(255,255,255,0.2)] transition-all duration-300 hover:scale-105 hover:bg-[#C0C0C0]"
                 >
                     Join Now
                 </Button>
@@ -76,8 +74,9 @@ export default function PagesHome() {
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
             </div>
 
+
             {/* Full Screen 3D Canvas Layer */}
-            <div className="pointer-events-none absolute inset-0 z-10">
+            <div className="pointer-events-none absolute inset-0 z-20">
                 <Canvas gl={{ antialias: false, alpha: true }}>
                     <PerspectiveCamera makeDefault position={[0, 0, 10]} />
                     <ambientLight intensity={1.5} />
@@ -85,8 +84,7 @@ export default function PagesHome() {
                     <pointLight position={[-10, -10, -10]} />
 
                     <Suspense fallback={null}>
-                        <group position={[0, -1, -2]} scale={0.15}>
-
+                        <group position={[0, -1, -2]} scale={0.135}>
                             <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
                         </group>
                         <Environment preset="city" />
@@ -101,7 +99,7 @@ export default function PagesHome() {
             <Navbar />
 
             {/* Hero Content Layer */}
-            <div className="pointer-events-none relative z-20 flex h-full w-full flex-col items-center justify-center">
+            <div className="pointer-events-none relative z-30 flex h-full w-full flex-col items-center justify-center">
                 <div className="flex flex-col items-center space-y-8 text-center">
                     <h1 className="text-6xl font-black tracking-tighter text-white uppercase mix-blend-difference md:text-9xl">
                         falconhacks
@@ -119,7 +117,7 @@ export default function PagesHome() {
             </div>
 
             {/* Bottom Text Decor */}
-            <div className="pointer-events-none absolute right-8 bottom-8 z-30 opacity-30">
+            <div className="pointer-events-none absolute right-8 bottom-8 z-40 opacity-30">
                 <p className="text-[10px] tracking-[0.4em] text-[#C0C0C0] uppercase">
                     FLY FIGHT WIN
                 </p>
