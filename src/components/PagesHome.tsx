@@ -1,51 +1,41 @@
-import React, { Suspense, useRef, useState, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+const Canvas = lazy(() =>
+  import("@react-three/fiber").then((m) => ({ default: m.Canvas })),
+);
+const EffectComposer = lazy(() =>
+  import("@react-three/postprocessing").then((m) => ({
+    default: m.EffectComposer,
+  })),
+);
+const ASCII = lazy(() =>
+  import("@react-three/postprocessing").then((m) => ({ default: m.ASCII })),
+);
+const Bloom = lazy(() =>
+  import("@react-three/postprocessing").then((m) => ({ default: m.Bloom })),
+);
+const ChromaticAberration = lazy(() =>
+  import("@react-three/postprocessing").then((m) => ({
+    default: m.ChromaticAberration,
+  })),
+);
+
 import {
-  useGLTF,
   Environment,
   Float,
   PerspectiveCamera,
-  Points,
-  PointMaterial,
+  useGLTF,
   useProgress,
 } from "@react-three/drei";
 
-import {
-  EffectComposer,
-  ASCII,
-  Bloom,
-  ChromaticAberration,
-} from "@react-three/postprocessing";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useFrame } from "@react-three/fiber";
+import { ChevronDown } from "lucide-react";
 import * as THREE from "three";
 import LetterGlitch from "./LetterGlitch";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import { Menu, X, Loader2, ChevronDown } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { LoadingScreen } from "./LoadingScreen";
 import { Navbar } from "./Navbar";
 import { RegistrationModal } from "./RegistrationModal";
-import { LoadingScreen } from "./LoadingScreen";
+import { Button } from "./ui/button";
 
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
@@ -54,7 +44,7 @@ function Model({ url }: { url: string }) {
 
   useFrame((state) => {
     if (group.current) {
-      group.current.rotation.y += isMobile ? 0.004 : 0.002;
+      group.current.rotation.y += isMobile ? 0.004 : 0.0015;
       group.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
       group.current.position.y = Math.sin(state.clock.elapsedTime) * 0.2;
     }
@@ -73,19 +63,60 @@ function Model({ url }: { url: string }) {
   );
 }
 
-import PagesAbout from "./PagesAbout";
-import PagesSchedule from "./PagesSchedule";
-import PagesFAQ from "./PagesFAQ";
 import { Footer } from "./Footer";
+import PagesAbout from "./PagesAbout";
+import PagesFAQ from "./PagesFAQ";
+import PagesSchedule from "./PagesSchedule";
+
+// We need a wrapper to provide useFrame context after lazy loading
+const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={40} />
+      <ambientLight intensity={10} />
+      <pointLight position={[-10, -10, -10]} intensity={100} />
+      <pointLight position={[10, 10, 10]} intensity={100} />
+
+      <Suspense fallback={null}>
+        <group
+          position={[0, -1, 0]}
+          scale={isMobile ? 0.045 : 0.12}
+          rotation={[0, -Math.PI / 9, 0]}
+        >
+          <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
+        </group>
+        <Environment preset="city" />
+      </Suspense>
+
+      <EffectComposer>
+        <ASCII
+          characters=" .:-+*=%@#"
+          fontSize={isMobile ? 750 : 1000}
+          color="#4e4f4e"
+        />
+        <Bloom
+          intensity={0.5}
+          luminanceThreshold={0.2}
+          luminanceSmoothing={0.9}
+        />
+        <ChromaticAberration offset={new THREE.Vector2(0.005, 0.005)} />
+      </EffectComposer>
+    </>
+  );
+};
 
 export default function PagesHome() {
   const isMobile = useIsMobile();
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const { progress } = useProgress();
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (progress === 100) {
-      // Add a small delay for smoother transition
       const timer = setTimeout(() => setLoading(false), 800);
       return () => clearTimeout(timer);
     }
@@ -108,39 +139,20 @@ export default function PagesHome() {
 
       {/* Full Screen 3D Canvas Layer */}
       <div className="pointer-events-none fixed inset-0 z-20">
-        <Canvas
-          gl={{ antialias: false, alpha: true, stencil: false, depth: true }}
-        >
-          <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={40} />
-          <ambientLight intensity={10} />
-          <pointLight position={[-10, -10, -10]} intensity={100} />
-          <pointLight position={[10, 10, 10]} intensity={100} />
-
+        {mounted && (
           <Suspense fallback={null}>
-            <group
-              position={[0, -1, 0]}
-              scale={isMobile ? 0.045 : 0.12}
-              rotation={[0, -Math.PI / 9, 0]}
+            <Canvas
+              gl={{
+                antialias: false,
+                alpha: true,
+                stencil: false,
+                depth: true,
+              }}
             >
-              <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
-            </group>
-            <Environment preset="city" />
+              <SceneContent isMobile={isMobile} />
+            </Canvas>
           </Suspense>
-
-          <EffectComposer>
-            <ASCII
-              characters=" .:-+*=%@#"
-              fontSize={isMobile ? 750 : 1000}
-              color="#4e4f4e"
-            />
-            <Bloom
-              intensity={0.5}
-              luminanceThreshold={0.2}
-              luminanceSmoothing={0.9}
-            />
-            <ChromaticAberration offset={new THREE.Vector2(0.005, 0.005)} />
-          </EffectComposer>
-        </Canvas>
+        )}
       </div>
 
       <Navbar />

@@ -15,22 +15,22 @@ export default defineConfig({
       enabled: true,
       configPath: "wrangler.jsonc",
       persist: {
-        path: ".wrangler/state/v3"
-      }
+        path: ".wrangler/state/v3",
+      },
     },
     imageService: "compile",
     workerEntryPoint: {
-      path: "src/worker.ts"
-    }
+      path: "src/worker.ts",
+    },
   }),
 
   server: {
-    port: 3000
+    port: 3000,
   },
 
   integrations: [react()],
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss()]
   },
 });
