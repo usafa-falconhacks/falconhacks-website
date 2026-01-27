@@ -10,6 +10,10 @@
   "keep_vars": true,
   "routes": [
     {
+      "pattern": "www.falconhacks.org",
+      "custom_domain": true
+    },
+    {
       "pattern": "falconhacks.org",
       "custom_domain": true
     }
