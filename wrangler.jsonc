@@ -4,13 +4,13 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "falconhack",
+  "name": "falconhacks",
   "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2025-10-04",
   "keep_vars": true,
   "routes": [
     {
-      "pattern": "falconhack.neoprint3d.dev",
+      "pattern": "falconhacks.org",
       "custom_domain": true
     }
   ],
