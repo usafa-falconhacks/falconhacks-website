@@ -1,5 +1,6 @@
 ---
 import { Toaster } from "@/components/ui/sonner";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 const siteUrl = "https://falconhacks.neoprint3d.dev";
@@ -37,6 +38,7 @@ const description =
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="/og.png" />
+    <ClientRouter />
   </head>
 
   <body class="bg-black text-white">
