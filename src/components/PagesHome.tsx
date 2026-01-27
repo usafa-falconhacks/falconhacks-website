@@ -124,13 +124,14 @@ const PremiumSection = ({
       id={id}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-200px" }}
+      viewport={{ once: true, margin: "-20%" }}
       variants={{
         hidden: { opacity: 0 },
         visible: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.2,
+            staggerChildren: 0.3,
+            delayChildren: 0.2,
           },
         },
       }}

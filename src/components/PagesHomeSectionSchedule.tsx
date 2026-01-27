@@ -5,11 +5,11 @@ import LetterGlitch from "./LetterGlitch";
 import { TechnicalContainer } from "./TechnicalContainer";
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, filter: "blur(4px)" },
   visible: {
     opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    filter: "blur(0px)",
+    transition: { duration: 1.5, ease: [0.215, 0.61, 0.355, 1.0] },
   },
 };
 

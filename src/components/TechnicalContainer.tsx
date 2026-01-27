@@ -33,24 +33,18 @@ export const TechnicalContainer = ({
 
       {/* Main Container */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative border border-white/20 bg-black/80 shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+        initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+        whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{
+          duration: 1.2,
+          ease: [0.215, 0.61, 0.355, 1.0], // cubic-bezier for a smooth "settling" feel
+        }}
+        className="relative border border-white/5 bg-black/20 shadow-2xl ring-1 ring-white/5 backdrop-blur-xl"
         style={{ clipPath: getClipPath() }}
       >
-        {/* Animated Scanning Line */}
-        <motion.div
-          initial={{ top: "-10%" }}
-          animate={{ top: "110%" }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="pointer-events-none absolute left-0 z-10 h-[2px] w-full bg-gradient-to-r from-transparent via-white/5 to-transparent"
-        />
+        {/* Subtle Sheen Gradient */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent" />
 
         <div className="relative z-20 p-8 md:p-10">{children}</div>
 
