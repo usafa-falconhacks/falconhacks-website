@@ -35,7 +35,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
             opacity: 0,
             transition: { duration: 0.8, ease: "easeInOut" },
           }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black font-mono text-white"
+          className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black font-mono text-white"
         >
           {/* Background Grid */}
           <div className="absolute inset-0 z-0 bg-[linear-gradient(rgba(0,255,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,0,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [will-change:opacity]" />
@@ -97,7 +97,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
             FALCONNET // SECURE CONNECTION
           </div>
           <div className="absolute right-8 bottom-8 text-[10px] text-white/40">
-            V 2.0.24
+            v2.0.26
           </div>
         </motion.div>
       )}

@@ -1,24 +1,12 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-const Canvas = lazy(() =>
-  import("@react-three/fiber").then((m) => ({ default: m.Canvas })),
-);
-const EffectComposer = lazy(() =>
-  import("@react-three/postprocessing").then((m) => ({
-    default: m.EffectComposer,
-  })),
-);
-const ASCII = lazy(() =>
-  import("@react-three/postprocessing").then((m) => ({ default: m.ASCII })),
-);
-const Bloom = lazy(() =>
-  import("@react-three/postprocessing").then((m) => ({ default: m.Bloom })),
-);
-const ChromaticAberration = lazy(() =>
-  import("@react-three/postprocessing").then((m) => ({
-    default: m.ChromaticAberration,
-  })),
-);
-
+import React, { useEffect, useRef, useState, Suspense } from "react";
+import {
+  useScroll,
+  useTransform,
+  useSpring,
+  motion,
+  AnimatePresence,
+} from "framer-motion";
+import * as THREE from "three";
 import {
   Environment,
   Float,
@@ -26,27 +14,52 @@ import {
   useGLTF,
   useProgress,
 } from "@react-three/drei";
+import { useFrame, useThree, Canvas } from "@react-three/fiber";
+import {
+  EffectComposer,
+  Bloom,
+  ChromaticAberration,
+  ASCII,
+} from "@react-three/postprocessing";
+import { ChevronDown } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useFrame } from "@react-three/fiber";
-import { ChevronDown } from "lucide-react";
-import * as THREE from "three";
 import LetterGlitch from "./LetterGlitch";
 import { LoadingScreen } from "./LoadingScreen";
 import { Navbar } from "./Navbar";
 import { RegistrationModal } from "./RegistrationModal";
 import { Button } from "./ui/button";
+import { Footer } from "./Footer";
+import PagesHomeSectionAbout from "./PagesHomeSectionAbout";
+import PagesHomeSectionFAQ from "./PagesHomeSectionFAQ";
+import PagesHomeSectionSchedule from "./PagesHomeSectionSchedule";
 
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
   const group = useRef<any>(null);
   const isMobile = useIsMobile();
+  const { mouse } = useThree();
 
   useFrame((state) => {
     if (group.current) {
+      // Base rotation
       group.current.rotation.y += isMobile ? 0.004 : 0.0015;
       group.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
       group.current.position.y = Math.sin(state.clock.elapsedTime) * 0.2;
+
+      // Mouse Parallax
+      if (!isMobile) {
+        group.current.rotation.x = THREE.MathUtils.lerp(
+          group.current.rotation.x,
+          -mouse.y * 0.2,
+          0.1,
+        );
+        group.current.rotation.y = THREE.MathUtils.lerp(
+          group.current.rotation.y,
+          mouse.x * 0.2,
+          0.1,
+        );
+      }
     }
   });
 
@@ -63,12 +76,6 @@ function Model({ url }: { url: string }) {
   );
 }
 
-import { Footer } from "./Footer";
-import PagesAbout from "./PagesAbout";
-import PagesFAQ from "./PagesFAQ";
-import PagesSchedule from "./PagesSchedule";
-
-// We need a wrapper to provide useFrame context after lazy loading
 const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
   return (
     <>
@@ -105,11 +112,48 @@ const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
   );
 };
 
+const PremiumSection = ({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id?: string;
+}) => {
+  return (
+    <motion.section
+      id={id}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-200px" }}
+      variants={{
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: {
+            staggerChildren: 0.2,
+          },
+        },
+      }}
+      className="relative z-30"
+    >
+      {children}
+    </motion.section>
+  );
+};
+
 export default function PagesHome() {
   const isMobile = useIsMobile();
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const { progress } = useProgress();
+
+  const { scrollY } = useScroll();
+  const springScrollY = useSpring(scrollY, { stiffness: 100, damping: 30 });
+
+  const y1 = useTransform(springScrollY, [0, 500], [0, -150]);
+  const y2 = useTransform(springScrollY, [0, 500], [0, 150]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const canvasOpacity = useTransform(scrollY, [0, 600], [1, 0]);
 
   useEffect(() => {
     setMounted(true);
@@ -126,7 +170,6 @@ export default function PagesHome() {
     <div className="relative w-full overflow-hidden bg-black font-mono text-white selection:bg-white selection:text-black">
       <LoadingScreen loading={loading} />
 
-      {/* Background Layer: Letter Glitch */}
       <div className="fixed inset-0 z-0 opacity-[0.15]">
         <LetterGlitch
           glitchColors={["#4B9CD3", "#C0C0C0", "#111111"]}
@@ -137,8 +180,10 @@ export default function PagesHome() {
         />
       </div>
 
-      {/* Full Screen 3D Canvas Layer */}
-      <div className="pointer-events-none fixed inset-0 z-20">
+      <motion.div
+        style={{ opacity: canvasOpacity }}
+        className="pointer-events-none fixed inset-0 z-20"
+      >
         {mounted && (
           <Suspense fallback={null}>
             <Canvas
@@ -153,16 +198,18 @@ export default function PagesHome() {
             </Canvas>
           </Suspense>
         )}
-      </div>
+      </motion.div>
 
       <Navbar />
 
-      {/* Hero Section */}
       <section
         id="home"
         className="relative z-30 flex h-screen w-full flex-col items-center justify-center px-6"
       >
-        <div className="pointer-events-none flex flex-col items-center space-y-8 text-center md:space-y-8">
+        <motion.div
+          style={{ y: y1, opacity: heroOpacity }}
+          className="pointer-events-none flex flex-col items-center space-y-8 text-center md:space-y-8"
+        >
           <div className="flex flex-col items-center space-y-4">
             <h1 className="text-4xl leading-none font-black tracking-tighter text-white uppercase mix-blend-difference md:text-8xl lg:text-9xl">
               falconHacks
@@ -173,32 +220,37 @@ export default function PagesHome() {
             <RegistrationModal>
               <Button
                 size="lg"
-                className="group h-12 rounded-none border-none px-8 text-lg font-black uppercase transition-all duration-300 hover:scale-105 hover:bg-[#C0C0C0] md:h-14 md:px-10 md:text-xl"
+                className="group h-12 rounded-none border-none px-8 text-lg font-black uppercase shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:scale-105 hover:bg-white hover:text-black md:h-14 md:px-10 md:text-xl"
               >
                 Join Now
               </Button>
             </RegistrationModal>
-            <p className="animate-pulse text-[8px] font-bold tracking-[0.2em] text-[#C0C0C0]/40 uppercase md:text-[10px] md:tracking-[0.3em]">
+            <p className="animate-pulse bg-black/40 px-3 py-1 text-[8px] font-bold tracking-[0.2em] text-[#C0C0C0] uppercase backdrop-blur-sm md:text-[10px] md:tracking-[0.3em]">
               [ SYSTEM STATUS: ACTIVE // DEPLOYMENT: USAFA ]
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Decorative Elements */}
-        <div className="pointer-events-none absolute bottom-8 left-8 z-40 hidden sm:block">
-          <p className="text-[10px] font-bold tracking-[0.3em] text-white uppercase opacity-50">
+        <motion.div
+          style={{ y: y2, opacity: heroOpacity }}
+          className="pointer-events-none absolute bottom-8 left-8 z-40 hidden sm:block"
+        >
+          <p className="bg-black/40 px-2 py-1 text-[10px] font-bold tracking-[0.3em] text-white uppercase opacity-50 backdrop-blur-sm">
             COORDINATE: 38.9928° N, 104.8583° W
           </p>
-        </div>
+        </motion.div>
 
-        <div className="pointer-events-none absolute right-8 bottom-8 z-40 hidden sm:block">
-          <p className="text-[10px] font-bold tracking-[0.3em] text-white uppercase opacity-50">
+        <motion.div
+          style={{ y: y2, opacity: heroOpacity }}
+          className="pointer-events-none absolute right-8 bottom-8 z-40 hidden sm:block"
+        >
+          <p className="bg-black/40 px-2 py-1 text-[10px] font-bold tracking-[0.3em] text-white uppercase opacity-50 backdrop-blur-sm">
             TAKE FLIGHT
           </p>
-        </div>
+        </motion.div>
 
-        {/* Scroll Indicator */}
-        <div
+        <motion.div
+          style={{ opacity: heroOpacity }}
           className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 cursor-pointer opacity-30 transition-all duration-500 hover:opacity-100"
           onClick={() =>
             document
@@ -212,44 +264,25 @@ export default function PagesHome() {
             </span>
             <ChevronDown className="h-4 w-4 animate-bounce text-white" />
           </div>
+        </motion.div>
+      </section>
+
+      <PremiumSection id="about">
+        <PagesHomeSectionAbout />
+      </PremiumSection>
+
+      <PremiumSection id="schedule">
+        <PagesHomeSectionSchedule />
+      </PremiumSection>
+
+      <PremiumSection id="faq">
+        <div className="pb-20">
+          <PagesHomeSectionFAQ />
         </div>
-
-        {/* Scroll Indicator */}
-        <div
-          className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 cursor-pointer opacity-30 transition-all duration-500 hover:opacity-100"
-          onClick={() =>
-            document
-              .getElementById("about")
-              ?.scrollIntoView({ behavior: "smooth" })
-          }
-        >
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-[9px] font-bold tracking-[0.4em] text-white uppercase">
-              Scroll
-            </span>
-            <ChevronDown className="h-4 w-4 animate-bounce text-white" />
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="relative z-30">
-        <PagesAbout />
-      </section>
-
-      {/* Schedule Section */}
-      <section id="schedule" className="relative z-30">
-        <PagesSchedule />
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="relative z-30 pb-20">
-        <PagesFAQ />
-      </section>
+      </PremiumSection>
 
       <Footer />
 
-      {/* Scanline Overlay */}
       <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%),linear-gradient(90deg,rgba(255,0,0,0.1),rgba(0,255,0,0.05),rgba(0,0,255,0.1))] bg-[length:100%_4px,4px_100%] opacity-20" />
     </div>
   );

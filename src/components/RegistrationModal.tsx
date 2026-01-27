@@ -107,7 +107,7 @@ export const RegistrationModal = ({
                       className="rounded-none border-white/10 bg-white/5 focus-visible:ring-white"
                     />
                   </FormControl>
-                  <FormMessage className="text-[10px] text-red-500 uppercase" />
+                  <FormMessage className="text-primary text-[10px] uppercase" />
                 </FormItem>
               )}
             />
@@ -126,7 +126,7 @@ export const RegistrationModal = ({
                       className="rounded-none border-white/10 bg-white/5 focus-visible:ring-white"
                     />
                   </FormControl>
-                  <FormMessage className="text-[10px] text-red-500 uppercase" />
+                  <FormMessage className="text-primary text-[10px] uppercase" />
                 </FormItem>
               )}
             />
@@ -145,7 +145,7 @@ export const RegistrationModal = ({
                       className="rounded-none border-white/10 bg-white/5 focus-visible:ring-white"
                     />
                   </FormControl>
-                  <FormMessage className="text-[10px] text-red-500 uppercase" />
+                  <FormMessage className="text-primary text-[10px] uppercase" />
                 </FormItem>
               )}
             />
@@ -164,7 +164,7 @@ export const RegistrationModal = ({
                       className="rounded-none border-white/10 bg-white/5 focus-visible:ring-white"
                     />
                   </FormControl>
-                  <FormMessage className="text-[10px] text-red-500 uppercase" />
+                  <FormMessage className="text-primary text-[10px] uppercase" />
                 </FormItem>
               )}
             />
