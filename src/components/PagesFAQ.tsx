@@ -13,29 +13,29 @@ export default function PagesFAQ() {
 
   const faqs = [
     {
+      question: "What is a hackathon?",
+      answer:
+        "A hackathon is an innovation sprint where you turn your crazy ideas into real projects. At FalconHacks, for 36 hours (April 24th to 26th) online, you'll be learning and building in an energetic environment with people as passionate as you are! We cover epic prizes, world-renowned guest speakers, incredible mentors, and deeply technical workshops and fun activities throughout the event. Basically, you take care of hacking and we'll take care of you!"
+    },
+    {
       question: "Who can participate?",
       answer:
-        "FalconHack is open to all USAFA cadets and visiting students from invited institutions. No prior coding experience is required!",
-    },
-    {
-      question: "What is the team size?",
-      answer:
-        "Teams can range from 1 to 4 members. You can form a team beforehand or find teammates at the event.",
-    },
-    {
-      question: "What should I bring?",
-      answer:
-        "Bring your laptop, charger, and any hardware you might want to hack on. We'll provide food, drinks, and swag.",
-    },
-    {
-      question: "Is there a theme?",
-      answer:
-        "Yes! This year's theme is 'Cyber Warfare & Defense'. Projects should focus on innovative solutions for national security challenges.",
+        "FalconHacks is open to all USAFA cadets and service academy students. Be sure to submit an application. No prior coding experience is required!",
     },
     {
       question: "How much does it cost?",
       answer:
-        "Nothing! FalconHack is completely free for all participants, thanks to our generous sponsors.",
+        "FalconHacks is free for all accepted hackers! It's our plreasure to bring virtual workshops and prizes to our hackers without any cost on your end."
+    },
+    {
+      question: "What if I don't have a team or idea?",
+      answer:
+        "Teams can range from 1 to 4 members. Many hackers don't have a team, and you can form them at the event! Once you're accepted, we open up a meeting room to help you find teammates. We also have team-forming and idea-brainstorming activities to help you find teammates for our tracks.",
+    },
+    {
+      question: "Is there a theme?",
+      answer:
+        "Yes! This year's theme is 'Cyber Warfare & Defense'. Projects should focus on innovative solutions to the given tracks.",
     },
   ];
 

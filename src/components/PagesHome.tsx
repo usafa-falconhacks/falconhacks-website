@@ -165,7 +165,7 @@ export default function PagesHome() {
         <div className="pointer-events-none flex flex-col items-center space-y-8 text-center md:space-y-8">
           <div className="flex flex-col items-center space-y-4">
             <h1 className="text-4xl leading-none font-black tracking-tighter text-white uppercase mix-blend-difference md:text-8xl lg:text-9xl">
-              falcon hacks
+              falconHacks
             </h1>
           </div>
 
@@ -193,7 +193,7 @@ export default function PagesHome() {
 
         <div className="pointer-events-none absolute right-8 bottom-8 z-40 hidden sm:block">
           <p className="text-[10px] font-bold tracking-[0.3em] text-white uppercase opacity-50">
-            FLY FIGHT WIN
+            TAKE FLIGHT
           </p>
         </div>
 

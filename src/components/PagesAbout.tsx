@@ -23,10 +23,9 @@ export default function PagesAbout() {
               The Initiative
             </h2>
             <p className="text-lg leading-relaxed text-[#C0C0C0]">
-              FalconHack is the premier hackathon at the United States Air Force
-              Academy. We bring together the brightest minds to solve critical
-              challenges in national security, cyber defense, and aerospace
-              innovation.
+              The United States Air Force Academy’s premier hackathon 
+              where students and cadets from around the nation come together 
+              to design and build innovative technological solutions from scratch.
             </p>
             <p className="text-lg leading-relaxed text-[#C0C0C0]">
               Our mission is to foster a culture of rapid innovation and
@@ -56,19 +55,27 @@ export default function PagesAbout() {
               <ul className="space-y-2 text-[#C0C0C0]">
                 <li className="flex items-center gap-3">
                   <span className="h-1.5 w-1.5 bg-red-500/50"></span>
-                  Cyber Warfare
+                  Artificial Intelligence
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="h-1.5 w-1.5 bg-white/50"></span>
-                  AI & Machine Learning
+                  Space & Cyber Domain
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="h-1.5 w-1.5 bg-blue-500/50"></span>
-                  Space Systems
+                  Information Security
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="h-1.5 w-1.5 bg-green-500/50"></span>
-                  Simulation & Training
+                  Autonomous Systems
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="h-1.5 w-1.5 bg-orange-500/50"></span>
+                  Education & Training
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="h-1.5 w-1.5 bg-orange-500/50"></span>
+                  Health & Wellness
                 </li>
               </ul>
             </div>
