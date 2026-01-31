@@ -1,11 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from "react";
-import {
-  useScroll,
-  useTransform,
-  useSpring,
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { useScroll, useTransform, useSpring, motion } from "motion/react";
 import * as THREE from "three";
 import {
   Environment,
@@ -13,6 +7,7 @@ import {
   PerspectiveCamera,
   useGLTF,
   useProgress,
+  Html,
 } from "@react-three/drei";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import {
@@ -24,44 +19,60 @@ import {
 import { ChevronDown } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import LetterGlitch from "./LetterGlitch";
-import { LoadingScreen } from "./LoadingScreen";
-import { Navbar } from "./Navbar";
-import { RegistrationModal } from "./RegistrationModal";
-import { Button } from "./ui/button";
-import { Footer } from "./Footer";
+import LetterGlitch from "../react-bits/LetterGlitch";
+import { LoadingScreen } from "../LoadingScreen";
+import { Navbar } from "../Navbar";
+import { RegistrationModal } from "../RegistrationModal";
+import { Button } from "../ui/button";
+import { Footer } from "../Footer";
 import PagesHomeSectionAbout from "./PagesHomeSectionAbout";
 import PagesHomeSectionFAQ from "./PagesHomeSectionFAQ";
 import PagesHomeSectionSchedule from "./PagesHomeSectionSchedule";
+
+import PagesHomeSectionStats from "./PagesHomeSectionStats";
+import PagesHomeSectionPrizes from "./PagesHomeSectionPrizes";
+import PagesHomeSectionSponsors from "./PagesHomeSectionSponsors";
+import { EncryptedText } from "../ui/encrypted-text";
 
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
   const group = useRef<any>(null);
   const isMobile = useIsMobile();
-  const { mouse } = useThree();
+  const { mouse, viewport } = useThree();
+  const [reticlePos, setReticlePos] = useState({ x: 0, y: 0 });
 
   useFrame((state) => {
     if (group.current) {
-      // Base rotation
-      group.current.rotation.y += isMobile ? 0.004 : 0.0015;
-      group.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-      group.current.position.y = Math.sin(state.clock.elapsedTime) * 0.2;
-
-      // Mouse Parallax
-      if (!isMobile) {
-        group.current.rotation.x = THREE.MathUtils.lerp(
-          group.current.rotation.x,
-          -mouse.y * 0.2,
-          0.1,
-        );
-        group.current.rotation.y = THREE.MathUtils.lerp(
-          group.current.rotation.y,
-          mouse.x * 0.2,
-          0.1,
-        );
-      }
+      group.current.rotation.x = THREE.MathUtils.lerp(
+        group.current.rotation.x,
+        -mouse.y * 0.2,
+        0.1,
+      );
+      group.current.rotation.y = THREE.MathUtils.lerp(
+        group.current.rotation.y,
+        mouse.x * 0.2,
+        0.1,
+      );
     }
   });
+
+  // Apply premium material to model
+  useEffect(() => {
+    if (scene) {
+      scene.traverse((child: any) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: "#1a1a1a",
+            metalness: 0.9,
+            roughness: 0.3,
+            wireframe: false,
+          });
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+    }
+  }, [scene]);
 
   return (
     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
@@ -80,33 +91,33 @@ const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={40} />
-      <ambientLight intensity={10} />
-      <pointLight position={[-10, -10, -10]} intensity={100} />
-      <pointLight position={[10, 10, 10]} intensity={100} />
-
+      <ambientLight intensity={2.5} />
+      <pointLight position={[10, 10, 10]} intensity={500} />
+      <pointLight position={[-10, -10, -10]} intensity={500} />
       <Suspense fallback={null}>
         <group
-          position={[0, -1, 0]}
-          scale={isMobile ? 0.045 : 0.12}
-          rotation={[0, -Math.PI / 9, 0]}
+          position={[0, isMobile ? -0.75 : -1.5, 0]}
+          scale={isMobile ? 0.065 : 0.12}
+          rotation={[-Math.PI / 32, -Math.PI / 9, 0]}
         >
           <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
         </group>
-        <Environment preset="city" />
+        <Environment preset="city" environmentIntensity={2} />
       </Suspense>
 
       <EffectComposer>
         <ASCII
-          characters=" .:-+*=%@#"
+          characters=" .:-+*=%@#<>"
           fontSize={isMobile ? 750 : 1000}
+          cellSize={4}
           color="#4e4f4e"
         />
         <Bloom
-          intensity={0.5}
+          intensity={0.75}
           luminanceThreshold={0.2}
           luminanceSmoothing={0.9}
         />
-        <ChromaticAberration offset={new THREE.Vector2(0.005, 0.005)} />
+        <ChromaticAberration offset={new THREE.Vector2(0.0035, 0.0035)} />
       </EffectComposer>
     </>
   );
@@ -130,7 +141,7 @@ const PremiumSection = ({
         visible: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.3,
+            staggerChildren: 0.1,
             delayChildren: 0.2,
           },
         },
@@ -171,13 +182,17 @@ export default function PagesHome() {
     <div className="relative w-full overflow-hidden bg-black font-mono text-white selection:bg-white selection:text-black">
       <LoadingScreen loading={loading} />
 
-      <div className="fixed inset-0 z-0 opacity-[0.15]">
+      <div className="fixed inset-0 z-0 opacity-[0.075]">
         <LetterGlitch
           glitchColors={["#4B9CD3", "#C0C0C0", "#111111"]}
           glitchSpeed={100}
-          centerVignette={false}
+          centerVignette={true}
           outerVignette={true}
           smooth={true}
+          fontSize={isMobile ? 12 : 16}
+          charWidth={isMobile ? 7.5 : 10}
+          charHeight={isMobile ? 15 : 20}
+          key={String(isMobile)}
         />
       </div>
 
@@ -188,11 +203,10 @@ export default function PagesHome() {
         {mounted && (
           <Suspense fallback={null}>
             <Canvas
+              dpr={[1, 1.5]}
+              performance={{ min: 0.5 }}
               gl={{
-                antialias: false,
                 alpha: true,
-                stencil: false,
-                depth: true,
               }}
             >
               <SceneContent isMobile={isMobile} />
@@ -213,7 +227,13 @@ export default function PagesHome() {
         >
           <div className="flex flex-col items-center space-y-4">
             <h1 className="text-4xl leading-none font-black tracking-tighter text-white uppercase mix-blend-difference md:text-8xl lg:text-9xl">
-              falconHacks
+              <EncryptedText
+                text="FalconHacks"
+                encryptedClassName="text-neutral-500"
+                revealedClassName="text-white"
+                revealDelayMs={75}
+                key={loading ? "loading" : "loaded"}
+              />
             </h1>
           </div>
 
@@ -272,6 +292,14 @@ export default function PagesHome() {
         <PagesHomeSectionAbout />
       </PremiumSection>
 
+      <PremiumSection id="stats">
+        <PagesHomeSectionStats />
+      </PremiumSection>
+
+      <PremiumSection id="prizes">
+        <PagesHomeSectionPrizes />
+      </PremiumSection>
+
       <PremiumSection id="schedule">
         <PagesHomeSectionSchedule />
       </PremiumSection>
@@ -280,6 +308,10 @@ export default function PagesHome() {
         <div className="pb-20">
           <PagesHomeSectionFAQ />
         </div>
+      </PremiumSection>
+
+      <PremiumSection id="sponsors">
+        <PagesHomeSectionSponsors />
       </PremiumSection>
 
       <Footer />

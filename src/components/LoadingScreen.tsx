@@ -11,7 +11,7 @@ const bootSequence = [
   "LOADING TACTICAL ASSETS...",
   "DECRYPTING MISSION DATA...",
   "SYSTEM CHECK COMPLETE.",
-  "WELCOME, CADET.",
+  "WELCOME, Hacker.",
 ];
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
@@ -38,7 +38,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
           className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black font-mono text-white"
         >
           {/* Background Grid */}
-          <div className="absolute inset-0 z-0 bg-[linear-gradient(rgba(0,255,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,0,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [will-change:opacity]" />
+          <div className="absolute inset-0 z-0 bg-[linear-gradient(rgba(0,255,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,0,0.03)_1px,transparent_1px)] bg-size-[40px_40px] will-change-[opacity]" />
 
           {/* Center Content */}
           <div className="z-10 flex flex-col items-center space-y-8">

@@ -1,8 +1,6 @@
 import React from "react";
 import { motion, type Variants } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
-import LetterGlitch from "./LetterGlitch";
-import { TechnicalContainer } from "./TechnicalContainer";
+import { TechnicalContainer } from "../TechnicalContainer";
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, filter: "blur(4px)" },
@@ -15,8 +13,8 @@ const itemVariants: Variants = {
 
 export default function PagesHomeSectionSchedule() {
   return (
-    <div className="relative min-h-screen w-full font-mono text-white selection:bg-white selection:text-black">
-      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-32 md:py-48">
+    <div className="relative w-full font-mono text-white selection:bg-white selection:text-black">
+      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-20">
         <motion.div
           variants={itemVariants}
           className="mb-16 flex flex-col items-center space-y-4 text-center"
@@ -91,11 +89,11 @@ export default function PagesHomeSectionSchedule() {
                 variants={itemVariants}
                 className="flex items-center gap-6"
               >
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="h-px flex-1 bg-linear-to-r from-transparent via-white/30 to-transparent"></div>
                 <h2 className="text-3xl font-black tracking-widest text-white uppercase">
                   Day {section.day} // {section.name}
                 </h2>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="h-px flex-1 bg-linear-to-r from-transparent via-white/30 to-transparent"></div>
               </motion.div>
 
               <div className="grid gap-4">

@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, type Variants } from "framer-motion";
-import { TechnicalContainer } from "./TechnicalContainer";
+import { TechnicalContainer } from "../TechnicalContainer";
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, filter: "blur(4px)" },
@@ -13,8 +13,8 @@ const itemVariants: Variants = {
 
 export default function PagesHomeSectionAbout() {
   return (
-    <div className="relative min-h-screen w-full font-mono text-white selection:bg-white selection:text-black">
-      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-32 md:py-48">
+    <div className="relative w-full font-mono text-white selection:bg-white selection:text-black">
+      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-20">
         <motion.div
           variants={itemVariants}
           className="mb-16 flex flex-col items-center space-y-4 text-center"
@@ -79,12 +79,12 @@ export default function PagesHomeSectionAbout() {
                   </h3>
                   <ul className="grid grid-cols-1 gap-x-8 gap-y-3 font-medium text-white sm:grid-cols-2">
                     {[
-                      { name: "Artificial Intelligence", color: "bg-primary" },
+                      { name: "Artificial Intelligence", color: "bg-red-500" },
                       { name: "Space & Cyber Domain", color: "bg-white" },
-                      { name: "Information Security", color: "bg-blue-500" },
-                      { name: "Autonomous Systems", color: "bg-green-500" },
-                      { name: "Education & Training", color: "bg-orange-500" },
-                      { name: "Health & Wellness", color: "bg-pink-500" },
+                      { name: "Information Security", color: "bg-red-700" },
+                      { name: "Autonomous Systems", color: "bg-orange-600" },
+                      { name: "Education & Training", color: "bg-red-400" },
+                      { name: "Health & Wellness", color: "bg-amber-500" },
                     ].map((track) => (
                       <li
                         key={track.name}

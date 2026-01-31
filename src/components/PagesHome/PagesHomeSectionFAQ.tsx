@@ -7,8 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useIsMobile } from "@/hooks/use-mobile";
-import LetterGlitch from "./LetterGlitch";
-import { TechnicalContainer } from "./TechnicalContainer";
+import { TechnicalContainer } from "../TechnicalContainer";
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, filter: "blur(4px)" },
@@ -51,8 +50,8 @@ export default function PagesHomeSectionFAQ() {
   ];
 
   return (
-    <div className="relative min-h-screen w-full font-mono text-white selection:bg-white selection:text-black">
-      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-32 md:py-48">
+    <div className="relative w-full font-mono text-white selection:bg-white selection:text-black">
+      <div className="relative z-10 container mx-auto flex flex-col items-center px-6 py-20">
         <motion.div
           variants={itemVariants}
           className="mb-16 flex flex-col items-center space-y-4 text-center"

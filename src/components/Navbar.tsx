@@ -16,8 +16,11 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: "About", href: "#about" },
+    { name: "Stats", href: "#stats" },
+    { name: "Prizes", href: "#prizes" },
     { name: "Schedule", href: "#schedule" },
     { name: "FAQ", href: "#faq" },
+    { name: "Sponsors", href: "#sponsors" },
   ];
 
   return (
@@ -35,7 +38,7 @@ export const Navbar = () => {
             <span className="text-xs font-black text-black uppercase">FH</span>
           </div>
           <div className="hidden text-xl font-bold tracking-tighter text-white uppercase md:block">
-            Falcon Hacks
+            FalconHacks
           </div>
         </a>
 

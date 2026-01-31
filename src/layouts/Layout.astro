@@ -1,5 +1,6 @@
 ---
 import { Toaster } from "@/components/ui/sonner";
+import { CustomCursor } from "@/components/CustomCursor";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
@@ -45,6 +46,7 @@ const description =
   </head>
 
   <body class="bg-black text-white">
+    <CustomCursor client:load />
     <slot />
     <Toaster client:only="react" />
   </body>

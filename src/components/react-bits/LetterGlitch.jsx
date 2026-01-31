@@ -1,4 +1,3 @@
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useRef, useEffect } from "react";
 
 const LetterGlitch = ({
@@ -9,6 +8,9 @@ const LetterGlitch = ({
   outerVignette = true,
   smooth = true,
   characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789",
+  fontSize = 16,
+  charWidth = 10,
+  charHeight = 20,
 }) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
@@ -17,13 +19,7 @@ const LetterGlitch = ({
   const context = useRef(null);
   const lastGlitchTime = useRef(Date.now());
 
-  const isMobile = useIsMobile();
-
   const lettersAndSymbols = Array.from(characters);
-
-  const fontSize = isMobile ? 8 : 16;
-  const charWidth = isMobile ? 5 : 10;
-  const charHeight = isMobile ? 10 : 20;
 
   const getRandomChar = () => {
     return lettersAndSymbols[
