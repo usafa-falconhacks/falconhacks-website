@@ -2,12 +2,12 @@ import React from "react";
 import { motion, type Variants } from "framer-motion";
 import { TechnicalContainer } from "../TechnicalContainer";
 
+// Optimized variants for better performance
 const itemVariants: Variants = {
-  hidden: { opacity: 0, filter: "blur(4px)" },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    filter: "blur(0px)",
-    transition: { duration: 1.5, ease: [0.215, 0.61, 0.355, 1.0] },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 

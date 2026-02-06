@@ -79,7 +79,7 @@ const LetterGlitch = ({
     const parent = canvas.parentElement;
     if (!parent) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1);
     const rect = parent.getBoundingClientRect();
 
     canvas.width = rect.width * dpr;

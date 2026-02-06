@@ -88,6 +88,28 @@ function Model({ url }: { url: string }) {
 }
 
 const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
+  // Performance optimization: skip post-processing on mobile
+  if (isMobile) {
+    return (
+      <>
+        <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={40} />
+        <ambientLight intensity={2.5} />
+        <pointLight position={[10, 10, 10]} intensity={500} />
+        <pointLight position={[-10, -10, -10]} intensity={500} />
+        <Suspense fallback={null}>
+          <group
+            position={[0, -0.75, 0]}
+            scale={0.065}
+            rotation={[-Math.PI / 32, -Math.PI / 9, 0]}
+          >
+            <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
+          </group>
+          <Environment preset="city" environmentIntensity={2} />
+        </Suspense>
+      </>
+    );
+  }
+
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={40} />
@@ -96,8 +118,8 @@ const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
       <pointLight position={[-10, -10, -10]} intensity={500} />
       <Suspense fallback={null}>
         <group
-          position={[0, isMobile ? -0.75 : -1.5, 0]}
-          scale={isMobile ? 0.065 : 0.12}
+          position={[0, -1.5, 0]}
+          scale={0.12}
           rotation={[-Math.PI / 32, -Math.PI / 9, 0]}
         >
           <Model url="/assets/models/low_poly_11_usaf_f22a_raptor.glb" />
@@ -108,8 +130,8 @@ const SceneContent = ({ isMobile }: { isMobile: boolean }) => {
       <EffectComposer>
         <ASCII
           characters=" .:-+*=%@#<>"
-          fontSize={isMobile ? 750 : 1000}
-          cellSize={4}
+          fontSize={1000}
+          cellSize={isMobile ? 8 : 4}
           color="#4e4f4e"
         />
         <Bloom
@@ -166,6 +188,9 @@ export default function PagesHome() {
   const y2 = useTransform(springScrollY, [0, 500], [0, 150]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
   const canvasOpacity = useTransform(scrollY, [0, 600], [1, 0]);
+  const canvasDisplay = useTransform(scrollY, (value) =>
+    value > 600 ? "none" : "block",
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -188,7 +213,7 @@ export default function PagesHome() {
           glitchSpeed={100}
           centerVignette={true}
           outerVignette={true}
-          smooth={true}
+          smooth={!isMobile}
           fontSize={isMobile ? 12 : 16}
           charWidth={isMobile ? 7.5 : 10}
           charHeight={isMobile ? 15 : 20}
@@ -197,7 +222,7 @@ export default function PagesHome() {
       </div>
 
       <motion.div
-        style={{ opacity: canvasOpacity }}
+        style={{ opacity: canvasOpacity, display: canvasDisplay }}
         className="pointer-events-none fixed inset-0 z-20"
       >
         {mounted && (
@@ -207,6 +232,8 @@ export default function PagesHome() {
               performance={{ min: 0.5 }}
               gl={{
                 alpha: true,
+                antialias: false,
+                powerPreference: "high-performance",
               }}
             >
               <SceneContent isMobile={isMobile} />

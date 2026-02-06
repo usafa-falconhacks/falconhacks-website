@@ -3,13 +3,13 @@ import { motion, type Variants } from "framer-motion";
 import { TechnicalContainer } from "../TechnicalContainer";
 import { Trophy, Target, Zap, Shield, Cpu, Rocket } from "lucide-react";
 
+// Optimized variants for better performance
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 1, ease: [0.215, 0.61, 0.355, 1.0] },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 

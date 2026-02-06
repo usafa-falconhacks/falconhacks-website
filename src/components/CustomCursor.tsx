@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function CustomCursor() {
@@ -16,39 +16,75 @@ export function CustomCursor() {
   const cursorX = useSpring(mouseX, springConfig);
   const cursorY = useSpring(mouseY, springConfig);
 
-  useEffect(() => {
-    // Only show custom cursor on desktop
-    if (isMobile) return;
+  // Use refs to avoid recreating functions
+  const lastHoverCheckRef = useRef(0);
+  const pendingIdleCallbackRef = useRef<number | null>(null);
+  const HOVER_CHECK_INTERVAL = 150;
 
-    // Optimized mouse handler
-    let lastHoverCheck = 0;
-    const HOVER_CHECK_INTERVAL = 50; // Check hover state max every 50ms
-
-    const moveCursor = (e: MouseEvent) => {
+  const moveCursor = useCallback(
+    (e: MouseEvent) => {
       // Always update position immediately for smoothness
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
 
-      // Throttle the expensive DOM traversal (closest)
+      // Throttle the expensive DOM traversal
       const now = Date.now();
-      if (now - lastHoverCheck > HOVER_CHECK_INTERVAL) {
-        const target = e.target as HTMLElement;
-        const isInteractive =
-          target.closest("button") ||
-          target.closest("a") ||
-          target.closest("input") ||
-          target.closest(".cursor-pointer");
+      if (now - lastHoverCheckRef.current > HOVER_CHECK_INTERVAL) {
+        lastHoverCheckRef.current = now;
 
-        setIsHovering(!!isInteractive);
-        lastHoverCheck = now;
+        // Cancel any pending idle callback
+        if (pendingIdleCallbackRef.current !== null) {
+          if (typeof window.cancelIdleCallback === "function") {
+            window.cancelIdleCallback(pendingIdleCallbackRef.current);
+          }
+        }
+
+        // Use requestIdleCallback if available for expensive DOM checks
+        if (typeof window.requestIdleCallback === "function") {
+          pendingIdleCallbackRef.current = window.requestIdleCallback(
+            () => {
+              const target = e.target as HTMLElement;
+              if (!target) return;
+
+              // More efficient check using matches instead of closest where possible
+              const isInteractive =
+                target.matches("button, a, input, .cursor-pointer") ||
+                !!target.closest("button, a, input, .cursor-pointer");
+
+              setIsHovering(isInteractive);
+              pendingIdleCallbackRef.current = null;
+            },
+            { timeout: 100 },
+          );
+        } else {
+          // Fallback for browsers without requestIdleCallback
+          const target = e.target as HTMLElement;
+          if (!target) return;
+
+          const isInteractive =
+            target.matches("button, a, input, .cursor-pointer") ||
+            !!target.closest("button, a, input, .cursor-pointer");
+
+          setIsHovering(isInteractive);
+        }
       }
-    };
+    },
+    [mouseX, mouseY, isVisible],
+  );
 
-    const handleMouseEnter = () => setIsVisible(true);
-    const handleMouseLeave = () => setIsVisible(false);
+  const handleMouseEnter = useCallback(() => setIsVisible(true), []);
+  const handleMouseLeave = useCallback(() => setIsVisible(false), []);
 
-    window.addEventListener("mousemove", moveCursor);
+  useEffect(() => {
+    // Only show custom cursor on desktop and if hardware concurrency is sufficient
+    const hasSufficientPerformance =
+      typeof navigator !== "undefined"
+        ? (navigator.hardwareConcurrency || 4) > 2
+        : true;
+    if (isMobile || !hasSufficientPerformance) return;
+
+    window.addEventListener("mousemove", moveCursor, { passive: true });
     document.body.addEventListener("mouseenter", handleMouseEnter);
     document.body.addEventListener("mouseleave", handleMouseLeave);
 
@@ -71,18 +107,26 @@ export function CustomCursor() {
       document.body.removeEventListener("mouseenter", handleMouseEnter);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
 
+      // Cancel any pending idle callback
+      if (
+        pendingIdleCallbackRef.current !== null &&
+        typeof window.cancelIdleCallback === "function"
+      ) {
+        window.cancelIdleCallback(pendingIdleCallbackRef.current);
+      }
+
       // Restore default cursor
       document.documentElement.style.cursor = "";
       document.body.style.cursor = "";
       const styleEl = document.getElementById("cursor-style");
       if (styleEl) styleEl.remove();
     };
-  }, [isMobile, mouseX, mouseY]);
+  }, [isMobile, moveCursor, handleMouseEnter, handleMouseLeave]);
 
   if (isMobile || !isVisible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-9999 overflow-hidden">
       <motion.div
         className="absolute top-0 left-0"
         style={{
@@ -99,11 +143,12 @@ export function CustomCursor() {
               opacity: isHovering ? 1 : 0,
               scale: isHovering ? 1.5 : 0.8,
             }}
+            transition={{ duration: 0.3 }}
             className="absolute"
           >
             <motion.div
               animate={{
-                rotate: isHovering ? 360 : 0, // Changed to 360 for full spin
+                rotate: 360,
               }}
               transition={{
                 duration: 2,
@@ -111,12 +156,14 @@ export function CustomCursor() {
                 repeat: Infinity,
               }}
               className="h-16 w-16 rounded-full border border-dashed border-red-500/30"
+              style={{ willChange: "transform" }}
             />
           </motion.div>
+
           {/* Square Target Box - Expands and Glows on Hover */}
           <motion.div
             animate={{
-              width: isHovering ? "48px" : "16px", // Increased base size from 12px to 16px
+              width: isHovering ? "48px" : "16px",
               height: isHovering ? "48px" : "16px",
               borderColor: isHovering
                 ? "rgba(239, 68, 68, 1)"
@@ -135,66 +182,77 @@ export function CustomCursor() {
               damping: 20,
             }}
             className="relative z-10 border border-red-500"
+            style={{ willChange: "width, height" }}
           />
 
           {/* Extended Crosshairs - Retract for Focus */}
           <motion.div
             animate={{
-              height: isHovering ? "60px" : "32px", // Increased base size from 24px to 32px
+              height: isHovering ? "60px" : "32px",
               opacity: isHovering ? 0.8 : 0.5,
-              backgroundColor: isHovering ? "#ef4444" : "#ef4444",
             }}
-            className="absolute top-1/2 left-1/2 w-[1px] -translate-x-1/2 -translate-y-1/2 bg-red-500"
+            transition={{ duration: 0.3 }}
+            className="absolute top-1/2 left-1/2 w-px -translate-x-1/2 -translate-y-1/2 bg-red-500"
+            style={{ willChange: "height" }}
           />
           <motion.div
             animate={{
-              width: isHovering ? "60px" : "32px", // Increased base size from 24px to 32px
+              width: isHovering ? "60px" : "32px",
               opacity: isHovering ? 0.8 : 0.5,
-              backgroundColor: isHovering ? "#ef4444" : "#ef4444",
             }}
-            className="absolute top-1/2 left-1/2 h-[1px] -translate-x-1/2 -translate-y-1/2 bg-red-500"
+            transition={{ duration: 0.3 }}
+            className="absolute top-1/2 left-1/2 h-px -translate-x-1/2 -translate-y-1/2 bg-red-500"
+            style={{ willChange: "width" }}
           />
 
           {/* Corner Accents - Snap to corners on hover */}
-          <motion.div
-            animate={{
-              x: isHovering ? -2 : 0,
-              y: isHovering ? -2 : 0,
-              opacity: isHovering ? 1 : 0,
-            }}
-            className="absolute top-0 left-0 h-2 w-2 border-t-2 border-l-2 border-red-500"
-          />
-          <motion.div
-            animate={{
-              x: isHovering ? 2 : 0,
-              y: isHovering ? -2 : 0,
-              opacity: isHovering ? 1 : 0,
-            }}
-            className="absolute top-0 right-0 h-2 w-2 border-t-2 border-r-2 border-red-500"
-          />
-          <motion.div
-            animate={{
-              x: isHovering ? -2 : 0,
-              y: isHovering ? 2 : 0,
-              opacity: isHovering ? 1 : 0,
-            }}
-            className="absolute bottom-0 left-0 h-2 w-2 border-b-2 border-l-2 border-red-500"
-          />
-          <motion.div
-            animate={{
-              x: isHovering ? 2 : 0,
-              y: isHovering ? 2 : 0,
-              opacity: isHovering ? 1 : 0,
-            }}
-            className="absolute right-0 bottom-0 h-2 w-2 border-r-2 border-b-2 border-red-500"
-          />
+          {[
+            {
+              pos: "top-0 left-0",
+              borders: "border-t-2 border-l-2",
+              x: -2,
+              y: -2,
+            },
+            {
+              pos: "top-0 right-0",
+              borders: "border-t-2 border-r-2",
+              x: 2,
+              y: -2,
+            },
+            {
+              pos: "bottom-0 left-0",
+              borders: "border-b-2 border-l-2",
+              x: -2,
+              y: 2,
+            },
+            {
+              pos: "right-0 bottom-0",
+              borders: "border-r-2 border-b-2",
+              x: 2,
+              y: 2,
+            },
+          ].map((corner, i) => (
+            <motion.div
+              key={i}
+              animate={{
+                x: isHovering ? corner.x : 0,
+                y: isHovering ? corner.y : 0,
+                opacity: isHovering ? 1 : 0,
+              }}
+              transition={{ duration: 0.2 }}
+              className={`absolute h-2 w-2 ${corner.pos} ${corner.borders} border-red-500`}
+              style={{ willChange: "transform, opacity" }}
+            />
+          ))}
 
           {/* Center Dot */}
           <motion.div
             animate={{
-              scale: isHovering ? 2 : 1, // Disappear on hover to clear view
+              scale: isHovering ? 2 : 1,
             }}
+            transition={{ duration: 0.2 }}
             className="absolute top-1/2 left-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 bg-red-500"
+            style={{ willChange: "transform" }}
           />
 
           {/* Target Acquired Text Block */}
@@ -206,11 +264,13 @@ export function CustomCursor() {
             }}
             transition={{ duration: 0.2, delay: 0.05 }}
             className="absolute z-50 flex flex-col items-center"
+            style={{ willChange: "transform, opacity" }}
           >
             {/* Connecting Data Line */}
             <motion.div
               animate={{ height: isHovering ? 12 : 0 }}
-              className="w-[1px] bg-red-500/50"
+              transition={{ duration: 0.2 }}
+              className="w-px bg-red-500/50"
             />
 
             {/* Text Label */}
