@@ -337,9 +337,9 @@ export default function PagesHome() {
         </div>
       </PremiumSection>
 
-      <PremiumSection id="sponsors">
+      {/* <PremiumSection id="sponsors">
         <PagesHomeSectionSponsors />
-      </PremiumSection>
+      </PremiumSection> */}
 
       <Footer />
 

@@ -20,7 +20,7 @@ export const Navbar = () => {
     { name: "Prizes", href: "#prizes" },
     { name: "Schedule", href: "#schedule" },
     { name: "FAQ", href: "#faq" },
-    { name: "Sponsors", href: "#sponsors" },
+    // { name: "Sponsors", href: "#sponsors" },
   ];
 
   return (
